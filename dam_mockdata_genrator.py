@@ -15,27 +15,23 @@ def get_country_level_df(no_of_countries,start_year,no_of_years,total_achieved,d
         yearly_values = generate_exponential_increase(no_of_years,total_achieved)
     yearly_values = linear_targets(end_value=total_achieved,num_points=no_of_years)
 
-    master_list = []
-    for val in yearly_values:
-        master_list.extend([int(val * n) for n in float_generator(no_of_countries)])
-    # the above func generates a list of what each country achieved in each year i.e., [NG_y1,TZ_y2,...NG_y1,TZ_y2]
-    new_list = []
-    for val in master_list:
-        new_list.extend([int(val * n) for n in float_generator(no_of_sub_categories)])
+    country_values = [int(val * n) for val in yearly_values for n in float_generator(no_of_countries)]
+    # the above generates a list of what each country achieved in each year i.e., [NG_y1,TZ_y2,...NG_y1,TZ_y2]
+    
+    achieved_values = [int(val * n) for val in country_values for n in float_generator(no_of_sub_categories)]
 
-    subcat_col = list(range(no_of_sub_categories))*int(len(new_list)/no_of_sub_categories)
+    #generate cols
+    subcat_col = [i for i in range(no_of_sub_categories)] * (len(achieved_values) // no_of_sub_categories)
+    country_col = [i for i in range(no_of_countries) for _ in range(no_of_years * no_of_sub_categories)]
+    year_col = [year for year in range(start_year, start_year + no_of_years) for _ in range(no_of_countries * no_of_sub_categories)]
+    
 
-    print (len(new_list)/no_of_countries)
-
-    country_col = [i for i in range(no_of_countries) for _ in range(int(len(new_list)/no_of_countries))]
-
-    year_col = [i for i in range(start_year,no_of_years+start_year) for _ in range(int(len(new_list)/no_of_years))]
-
+    print (f'Your proposed overall acheived number was {total_achieved}, the sum of all achieved in the dataframe col is {sum(achieved_values)}')
     return pd.DataFrame(
         {'Year':year_col,
          'Country':country_col,
          'Sub_category':subcat_col,
-         'achieved':new_list
+         'achieved':achieved_values
         }
         )
 
@@ -49,7 +45,7 @@ if __name__ == '__main__':
         df = get_country_level_df(10,2000,5,100000,'linear',4)
         df.to_csv('mock_data.csv',index=False)
     except Exception as e:
-        print (e)
+        print (f'the script failed. Reason: {e}')
 
 
 # get yearly targets
