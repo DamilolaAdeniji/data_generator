@@ -5,6 +5,7 @@ import pandas as pd
 
 def get_country_level_df(no_of_countries,start_year,no_of_years,total_achieved,distribution_type,no_of_sub_categories):
     """
+    total_achieved refers to the overall number you believe would be achieved by the end of the period
     start_year is the year you want the reading to start from (int)
     no_of_countries & no_of_years should be integers
     distribution_type has to be either 'linear' or 'exp'
