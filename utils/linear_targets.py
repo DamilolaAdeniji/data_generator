@@ -43,11 +43,13 @@ def target_dataframe_gen(**kwargs):
 
 if __name__ == '__main__':
     df  = target_dataframe_gen(
-        start_year = 2024,
-        end_year = 2035,
+        start_year = 2023,
+        end_year = 2029,
         targets= {
-        'target1':2000,
-    'target2':1000
+        'target1':10000,
+    'target2':16000,
+    'target3':16000,
+    'target4':80
         })
 
     df.to_csv('testing_this_out.csv',index=False)

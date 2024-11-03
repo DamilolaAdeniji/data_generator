@@ -4,6 +4,7 @@ from utils.gen_floats import float_generator
 import pandas as pd
 
 def get_country_level_df(no_of_countries,start_year,no_of_years,total_achieved,distribution_type,no_of_sub_categories):
+
     """
     total_achieved refers to the overall number you believe would be achieved by the end of the period
     start_year is the year you want the reading to start from (int)
@@ -12,18 +13,27 @@ def get_country_level_df(no_of_countries,start_year,no_of_years,total_achieved,d
     no_of_sub_categories refers to the distinct count of sub categories you need in a country,
       e.g. clean cooking has 5 (Biogas,electric, ethanol,ICS, LPG)
     """
+
     if distribution_type == 'exp':
         yearly_values = generate_exponential_increase(no_of_years,total_achieved)
-    yearly_values = linear_targets(end_value=total_achieved,num_points=no_of_years)
+    else:
+        yearly_values = linear_targets(end_value=total_achieved,num_points=no_of_years)
 
     country_values = [int(val * n) for val in yearly_values for n in float_generator(no_of_countries)]
+    print (len(country_values), ' total number of countries')
     # the above generates a list of what each country achieved in each year i.e., [NG_y1,TZ_y2,...NG_y1,TZ_y2]
     
     achieved_values = [int(val * n) for val in country_values for n in float_generator(no_of_sub_categories)]
 
     #generate cols
     subcat_col = [i for i in range(no_of_sub_categories)] * (len(achieved_values) // no_of_sub_categories)
-    country_col = [i for i in range(no_of_countries) for _ in range(no_of_years * no_of_sub_categories)]
+    print (len(subcat_col), ' total number of subcat')
+    repeated_countries = [item for item in range(no_of_countries) for _ in range(no_of_sub_categories)]
+    # Repeat the entire list the specified number of times
+    country_col = repeated_countries * no_of_years
+
+
+
     year_col = [year for year in range(start_year, start_year + no_of_years) for _ in range(no_of_countries * no_of_sub_categories)]
     
 
